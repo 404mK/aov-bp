@@ -12,7 +12,7 @@
   {"name": "Astrid", "roles": ["Warrior", "Assassin"], "lanes": ["Dark Slayer Lane", "Jungle"], "image": "images/Astrid.webp"},
   {"name": "Ata", "roles": ["Tank"], "lanes": ["Roaming"], "image": "images/Ata.webp"},
   {"name": "Aya", "roles": ["Support"], "lanes": ["Mid Lane", "Roaming"], "image": "images/Aya.webp"},
-  {"name": "Azzen'Ka", "roles": ["Mage"], "lanes": ["Mid Lane"], "image": "images/Azzen'ka.webp"},
+  {"name": "Azzen'Ka", "roles": ["Mage"], "lanes": ["Mid Lane"], "image": "images/Azzen'Ka.webp"},
   {"name": "Baldum", "roles": ["Tank", "Support"], "lanes": ["Roaming"], "image": "images/Baldum.webp"},
   {"name": "Bijan", "roles": ["Warrior"], "lanes": ["Dark Slayer Lane"], "image": "images/Bijan.webp"},
   {"name": "Billow", "roles": ["Warrior", "Assassin"], "lanes": ["Dark Slayer Lane", "Jungle"], "image": "images/Billow.webp"},
