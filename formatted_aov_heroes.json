@@ -2,7 +2,7 @@
   {"name": "Airi", "roles": ["Warrior", "Assassin"], "lanes": ["Dark Slayer Lane"], "image": "images/Airi.webp"},
   {"name": "Aleister", "roles": ["Mage"], "lanes": ["Mid Lane", "Roaming"], "image": "images/Aleister.webp"},
   {"name": "Alice", "roles": ["Mage", "Support"], "lanes": ["Mid Lane", "Roaming"], "image": "images/Alice.webp"},
-  {"name": "Allain", "roles": ["Warrior"], "lanes": ["Dark Slayer Lane", "Jungle"], "image": "images/Allain.webp"},
+  {"name": "Allain", "roles": ["Warrior"], "lanes": ["Dark Slayer Lane"], "image": "images/Allain.webp"},
   {"name": "Amily", "roles": ["Warrior"], "lanes": ["Dark Slayer Lane"], "image": "images/Amily.webp"},
   {"name": "Annette", "roles": ["Support", "Mage"], "lanes": ["Mid Lane"], "image": "images/Annette.webp"},
   {"name": "Aoi", "roles": ["Assassin"], "lanes": ["Jungle"], "image": "images/Aoi.webp"},
