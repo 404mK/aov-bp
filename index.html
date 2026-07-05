@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BP模擬器</title>
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
     <!-- Tailwind CSS Engine CDN -->
@@ -43,14 +43,12 @@
         }
 
         /* ─── P5 STYLISH SKEW FOR DESKTOP (DEFAULT) ─── */
-        /* 預設直接啟用強烈的傾斜效果，確保桌機版完美呈現 */
         .p5-skew-neg { transform: skewX(-12deg); }
         .p5-skew-pos { transform: skewX(12deg); }
         .p5-unskew { transform: skewX(12deg); }
         .p5-unskew-neg { transform: skewX(-12deg); }
 
         /* ─── MOBILE DISABLE OVERRIDE ─── */
-        /* 只有在手機/平版等窄螢幕下，才將傾斜打平避免排版擠壓 */
         @media (max-width: 1023px) {
             .p5-skew-neg, .p5-skew-pos, .p5-unskew, .p5-unskew-neg {
                 transform: none !important;
@@ -62,22 +60,32 @@
         .p5-font-mono { font-family: 'Rubik Mono One', sans-serif; }
 
         /* White Custom Jagged Scrollbar */
-        .hero-grid-scroll::-webkit-scrollbar { width: 8px; }
+        .hero-grid-scroll::-webkit-scrollbar { width: 6px; }
         .hero-grid-scroll::-webkit-scrollbar-thumb { background: #FFFFFF; }
         .hero-grid-scroll::-webkit-scrollbar-track { background: #0F1012; }
+
+        /* Hide scrollbar for tabs on mobile */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
         /* Highly aggressive responsive selection states */
         .active-glow-blue { 
             background: #FFFFFF !important;
             color: #0F1012 !important;
-            border: 4px solid #00b0ff !important;
-            box-shadow: -8px 8px 0px #00b0ff;
+            border: 3px solid #00b0ff !important;
+            box-shadow: -4px 4px 0px #00b0ff;
+        }
+        @media (min-width: 1024px) {
+            .active-glow-blue { border: 4px solid #00b0ff !important; box-shadow: -8px 8px 0px #00b0ff; }
         }
         .active-glow-red { 
             background: #DC0000 !important;
             color: #FFFFFF !important;
-            border: 4px solid #FFFFFF !important;
-            box-shadow: -8px 8px 0px #0F1012;
+            border: 3px solid #FFFFFF !important;
+            box-shadow: -4px 4px 0px #0F1012;
+        }
+        @media (min-width: 1024px) {
+            .active-glow-red { border: 4px solid #FFFFFF !important; box-shadow: -8px 8px 0px #0F1012; }
         }
 
         /* Sharp snapping animation profiles */
@@ -86,55 +94,55 @@
         }
     </style>
 </head>
-<body class="text-white min-h-screen p-4 lg:p-6 antialiased flex flex-col justify-between relative">
+<body class="text-white min-h-screen p-2 sm:p-4 lg:p-6 antialiased flex flex-col justify-between relative overflow-hidden lg:overflow-visible">
 
 <!-- BACKGROUND DECORATIVE SLASH -->
-<div class="fixed top-0 left-1/4 w-12 h-screen bg-p5-red opacity-10 transform -rotate-12 pointer-events-none z-0"></div>
+<div class="fixed top-0 left-1/4 w-12 h-screen bg-p5-red opacity-5 transform -rotate-12 pointer-events-none z-0"></div>
 <div class="fixed top-0 left-2/4 w-32 h-screen bg-white opacity-5 transform -rotate-12 pointer-events-none z-0"></div>
 
 <!-- TOP HUD HEAD-ON COLLISION STYLE -->
-<header class="w-full max-w-[1600px] mx-auto mb-6 lg:mb-8 z-10 relative">
-    <div class="flex flex-col md:flex-row items-stretch justify-between gap-0 bg-black border-4 border-white shadow-[12px_12px_0px_#DC0000] overflow-hidden">
+<header class="w-full max-w-[1600px] mx-auto mb-2 lg:mb-8 z-10 relative flex-shrink-0">
+    <div class="flex flex-col md:flex-row items-stretch justify-between gap-0 bg-black border-4 border-white shadow-[4px_4px_0px_#DC0000] lg:shadow-[12px_12px_0px_#DC0000] overflow-hidden">
         
         <!-- Blue Bans Dynamic Jagged Left Block -->
-        <div class="bg-white text-black p-4 flex items-center gap-4 p5-skew-neg lg:-ml-6 pr-8 w-full md:w-auto justify-center md:justify-start">
+        <div class="bg-white text-black p-1.5 md:p-4 flex items-center gap-4 p5-skew-neg lg:-ml-6 pr-8 w-full md:w-auto justify-center md:justify-start">
             <div class="p5-unskew text-left pl-6 hidden xl:block">
                 <span class="text-2xl font-normal p5-font-impact block text-p5-red" style="letter-spacing: 0.12em;">BLUE TEAM</span>
                 <span class="text-[10px] font-normal uppercase text-black" style="letter-spacing: 0.18em;font-size: 0.8rem;">藍方禁用英雄</span>
             </div>
-            <div class="flex gap-2 p5-unskew" id="blue-bans-root">
-                <div class="w-10 h-12 sm:w-12 sm:h-14 bg-black border-2 border-black lg:transform lg:-rotate-3 relative overflow-hidden transition-all duration-100" id="blue-ban-0"></div>
-                <div class="w-10 h-12 sm:w-12 sm:h-14 bg-black border-2 border-black lg:transform lg:rotate-6 relative overflow-hidden transition-all duration-100" id="blue-ban-1"></div>
-                <div class="w-10 h-12 sm:w-12 sm:h-14 bg-black border-2 border-black lg:transform lg:-rotate-6 relative overflow-hidden transition-all duration-100" id="blue-ban-2"></div>
-                <div class="w-10 h-12 sm:w-12 sm:h-14 bg-black border-2 border-black lg:transform lg:rotate-3 relative overflow-hidden transition-all duration-100" id="blue-ban-3"></div>
-                <div class="w-10 h-12 sm:w-12 sm:h-14 bg-black border-2 border-black lg:transform lg:-rotate-3 relative overflow-hidden transition-all duration-100" id="blue-ban-4"></div>
+            <div class="flex gap-1 p5-unskew" id="blue-bans-root">
+                <div class="w-7 h-9 sm:w-12 sm:h-14 bg-black border-2 border-black lg:transform lg:-rotate-3 relative overflow-hidden transition-all duration-100" id="blue-ban-0"></div>
+                <div class="w-7 h-9 sm:w-12 sm:h-14 bg-black border-2 border-black lg:transform lg:rotate-6 relative overflow-hidden transition-all duration-100" id="blue-ban-1"></div>
+                <div class="w-7 h-9 sm:w-12 sm:h-14 bg-black border-2 border-black lg:transform lg:-rotate-6 relative overflow-hidden transition-all duration-100" id="blue-ban-2"></div>
+                <div class="w-7 h-9 sm:w-12 sm:h-14 bg-black border-2 border-black lg:transform lg:rotate-3 relative overflow-hidden transition-all duration-100" id="blue-ban-3"></div>
+                <div class="w-7 h-9 sm:w-12 sm:h-14 bg-black border-2 border-black lg:transform lg:-rotate-3 relative overflow-hidden transition-all duration-100" id="blue-ban-4"></div>
             </div>
         </div>
 
         <!-- Central Clock / Match Status Banner Cutout -->
-        <div class="flex items-center justify-center gap-4 py-4 md:py-0 px-6 bg-p5-red text-white flex-grow relative overflow-hidden min-h-[80px]">
+        <div class="flex items-center justify-center gap-3 py-1 md:py-0 px-4 bg-p5-red text-white flex-grow relative overflow-hidden min-h-[50px] md:min-h-[80px]">
             <div class="absolute inset-0 bg-black opacity-10 transform -skew-x-12 translate-x-12"></div>
             
-            <div class="w-14 h-14 sm:w-16 sm:h-16 lg:transform lg:-rotate-12 bg-white text-black border-4 border-black flex items-center justify-center text-2xl sm:text-3xl p5-font-mono font-normal z-10 shadow-[4px_4px_0px_#000]" id="turnTimer">
+            <div class="w-9 h-9 sm:w-16 sm:h-16 lg:transform lg:-rotate-12 bg-white text-black border-2 md:border-4 border-black flex items-center justify-center text-lg sm:text-3xl p5-font-mono font-normal z-10 shadow-[2px_2px_0px_#000] lg:shadow-[4px_4px_0px_#000]" id="turnTimer">
                 30
             </div>
             
-            <div class="text-center min-w-[200px] sm:min-w-[240px] z-10 lg:transform lg:-rotate-1">
-                <div class="text-[10px] sm:text-xs font-normal text-black uppercase p5-font-marker" style="letter-spacing: 0.15em; font-size: 0.8rem;font-weight: bold;">BAN PICK SIMULATOR</div>
-                <div class="text-lg sm:text-xl font-normal text-white uppercase p5-font-impact" id="statusBanner" style="letter-spacing: 0.12em;">
+            <div class="text-center min-w-[150px] sm:min-w-[240px] z-10 lg:transform lg:-rotate-1">
+                <div class="text-[8px] sm:text-xs font-normal text-black uppercase p5-font-marker" style="letter-spacing: 0.15em; font-weight: bold;">BAN PICK SIMULATOR</div>
+                <div class="text-xs sm:text-xl font-normal text-white uppercase p5-font-impact" id="statusBanner" style="letter-spacing: 0.12em;">
                     正在載入英雄配置檔案...
                 </div>
             </div>
         </div>
 
         <!-- Red Bans Dynamic Jagged Right Block -->
-        <div class="bg-white text-black p-4 flex items-center gap-4 p5-skew-pos lg:-mr-6 pl-8 w-full md:w-auto justify-center md:justify-end">
-            <div class="flex gap-2 p5-unskew-neg" id="red-bans-root">
-                <div class="w-10 h-12 sm:w-12 sm:h-14 bg-black border-2 border-black lg:transform lg:rotate-3 relative overflow-hidden transition-all duration-100" id="red-ban-0"></div>
-                <div class="w-10 h-12 sm:w-12 sm:h-14 bg-black border-2 border-black lg:transform lg:-rotate-6 relative overflow-hidden transition-all duration-100" id="red-ban-1"></div>
-                <div class="w-10 h-12 sm:w-12 sm:h-14 bg-black border-2 border-black lg:transform lg:rotate-6 relative overflow-hidden transition-all duration-100" id="red-ban-2"></div>
-                <div class="w-10 h-12 sm:w-12 sm:h-14 bg-black border-2 border-black lg:transform lg:-rotate-3 relative overflow-hidden transition-all duration-100" id="red-ban-3"></div>
-                <div class="w-10 h-12 sm:w-12 sm:h-14 bg-black border-2 border-black lg:transform lg:rotate-3 relative overflow-hidden transition-all duration-100" id="red-ban-4"></div>
+        <div class="bg-white text-black p-1.5 md:p-4 flex items-center gap-4 p5-skew-pos lg:-mr-6 pl-8 w-full md:w-auto justify-center md:justify-end">
+            <div class="flex gap-1 p5-unskew-neg" id="red-bans-root">
+                <div class="w-7 h-9 sm:w-12 sm:h-14 bg-black border-2 border-black lg:transform lg:rotate-3 relative overflow-hidden transition-all duration-100" id="red-ban-0"></div>
+                <div class="w-7 h-9 sm:w-12 sm:h-14 bg-black border-2 border-black lg:transform lg:-rotate-6 relative overflow-hidden transition-all duration-100" id="red-ban-1"></div>
+                <div class="w-7 h-9 sm:w-12 sm:h-14 bg-black border-2 border-black lg:transform lg:rotate-6 relative overflow-hidden transition-all duration-100" id="red-ban-2"></div>
+                <div class="w-7 h-9 sm:w-12 sm:h-14 bg-black border-2 border-black lg:transform lg:-rotate-3 relative overflow-hidden transition-all duration-100" id="red-ban-3"></div>
+                <div class="w-7 h-9 sm:w-12 sm:h-14 bg-black border-2 border-black lg:transform lg:rotate-3 relative overflow-hidden transition-all duration-100" id="red-ban-4"></div>
             </div>
             <div class="p5-unskew-neg text-right pr-6 hidden xl:block">
                 <span class="text-2xl font-normal p5-font-impact block text-p5-red" style="letter-spacing: 0.12em;">RED TEAM</span>
@@ -146,117 +154,118 @@
 </header>
 
 <!-- MAIN SYSTEM CONFLICT COLLAGE LAYOUT -->
-<main class="w-full max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-5 gap-6 items-stretch flex-grow z-10 relative min-h-[600px]">
+<!-- 手機版限定：設定固定高度為視窗扣除頂部/底部空間，採用 flex-col 滿版排版 -->
+<main class="w-full max-w-[1600px] mx-auto flex flex-col h-[calc(100vh-120px)] md:h-[calc(100vh-150px)] lg:h-auto lg:grid lg:grid-cols-4 xl:grid-cols-5 gap-2 lg:gap-6 items-stretch flex-grow z-10 relative">
     
-    <!-- LEFT PANEL: Blue Team Asymmetrical List -->
-    <section class="lg:col-span-1 bg-p5-panel border-4 border-white p5-skew-neg p-4 flex flex-col gap-4 shadow-[8px_8px_0px_rgba(255,255,255,0.15)]">
-        <div class="p5-unskew bg-white text-black py-1 px-4 lg:transform lg:-rotate-3 text-center border-2 border-black">
-            <h2 class="text-xl font-normal p5-font-impact" style="letter-spacing: 0.12em;">藍方怪盜團</h2>
+    <!-- TOP / LEFT PANEL: Blue Team Asymmetrical List -->
+    <section class="bg-p5-panel border-2 lg:border-4 border-white p5-skew-neg p-1.5 lg:p-4 flex flex-col gap-1 lg:gap-4 shadow-[3px_3px_0px_rgba(255,255,255,0.15)] lg:shadow-[8px_8px_0px_rgba(255,255,255,0.15)] lg:col-span-1 order-1 lg:order-none flex-shrink-0">
+        <div class="p5-unskew bg-white text-black py-0.5 lg:py-1 px-4 lg:transform lg:-rotate-3 text-center border-2 border-black">
+            <h2 class="text-xs lg:text-xl font-normal p5-font-impact" style="letter-spacing: 0.12em;">藍方怪盜團</h2>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-5 lg:flex lg:flex-col gap-3 h-full justify-between mt-2" id="blue-slots-container">
+        <div class="grid grid-cols-5 lg:flex lg:flex-col gap-1 lg:gap-3 h-full justify-between mt-1" id="blue-slots-container">
             <!-- P1 -->
-            <div class="flex flex-col sm:flex-col lg:flex-row items-center gap-2 lg:gap-4 bg-black border-2 border-p5-gray/30 p-2 lg:transform lg:hover:-translate-x-1 p5-btn-transition" id="blue-p1">
-                <div class="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-p5-red text-white border-2 border-white flex items-center justify-center font-normal p5-font-mono text-xl lg:text-2xl flex-shrink-0 slot-img-box p5-unskew">1</div>
-                <div class="truncate text-center lg:text-left p5-unskew w-full"><div class="text-[10px] sm:text-[11px] font-normal bg-white text-black px-1.5 inline-block p5-font-impact mb-1">PLAYER 1</div><div class="text-sm sm:text-base lg:text-lg font-normal text-white name-field">-</div></div>
+            <div class="flex flex-col lg:flex-row items-center gap-1 lg:gap-4 bg-black border border-p5-gray/30 p-1 lg:p-2 lg:transform lg:hover:-translate-x-1 p5-btn-transition" id="blue-p1">
+                <div class="w-8 h-8 sm:w-12 sm:h-14 lg:w-24 lg:h-24 bg-p5-red text-white border border-white flex items-center justify-center font-normal p5-font-mono text-xs lg:text-2xl flex-shrink-0 slot-img-box p5-unskew">1</div>
+                <div class="truncate text-center lg:text-left p5-unskew w-full"><div class="hidden lg:block text-[11px] font-normal bg-white text-black px-1.5 inline-block p5-font-impact mb-1">PLAYER 1</div><div class="text-[10px] sm:text-xs lg:text-lg font-normal text-white name-field">-</div></div>
             </div>
             <!-- P2 -->
-            <div class="flex flex-col sm:flex-col lg:flex-row items-center gap-2 lg:gap-4 bg-black border-2 border-p5-gray/30 p-2 lg:transform lg:hover:-translate-x-1 p5-btn-transition" id="blue-p2">
-                <div class="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-p5-red text-white border-2 border-white flex items-center justify-center font-normal p5-font-mono text-xl lg:text-2xl flex-shrink-0 slot-img-box p5-unskew">2</div>
-                <div class="truncate text-center lg:text-left p5-unskew w-full"><div class="text-[10px] sm:text-[11px] font-normal bg-white text-black px-1.5 inline-block p5-font-impact mb-1">PLAYER 2</div><div class="text-sm sm:text-base lg:text-lg font-normal text-white name-field">-</div></div>
+            <div class="flex flex-col lg:flex-row items-center gap-1 lg:gap-4 bg-black border border-p5-gray/30 p-1 lg:p-2 lg:transform lg:hover:-translate-x-1 p5-btn-transition" id="blue-p2">
+                <div class="w-8 h-8 sm:w-12 sm:h-14 lg:w-24 lg:h-24 bg-p5-red text-white border border-white flex items-center justify-center font-normal p5-font-mono text-xs lg:text-2xl flex-shrink-0 slot-img-box p5-unskew">2</div>
+                <div class="truncate text-center lg:text-left p5-unskew w-full"><div class="hidden lg:block text-[11px] font-normal bg-white text-black px-1.5 inline-block p5-font-impact mb-1">PLAYER 2</div><div class="text-[10px] sm:text-xs lg:text-lg font-normal text-white name-field">-</div></div>
             </div>
             <!-- P3 -->
-            <div class="flex flex-col sm:flex-col lg:flex-row items-center gap-2 lg:gap-4 bg-black border-2 border-p5-gray/30 p-2 lg:transform lg:hover:-translate-x-1 p5-btn-transition" id="blue-p3">
-                <div class="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-p5-red text-white border-2 border-white flex items-center justify-center font-normal p5-font-mono text-xl lg:text-2xl flex-shrink-0 slot-img-box p5-unskew">3</div>
-                <div class="truncate text-center lg:text-left p5-unskew w-full"><div class="text-[10px] sm:text-[11px] font-normal bg-white text-black px-1.5 inline-block p5-font-impact mb-1">PLAYER 3</div><div class="text-sm sm:text-base lg:text-lg font-normal text-white name-field">-</div></div>
+            <div class="flex flex-col lg:flex-row items-center gap-1 lg:gap-4 bg-black border border-p5-gray/30 p-1 lg:p-2 lg:transform lg:hover:-translate-x-1 p5-btn-transition" id="blue-p3">
+                <div class="w-8 h-8 sm:w-12 sm:h-14 lg:w-24 lg:h-24 bg-p5-red text-white border border-white flex items-center justify-center font-normal p5-font-mono text-xs lg:text-2xl flex-shrink-0 slot-img-box p5-unskew">3</div>
+                <div class="truncate text-center lg:text-left p5-unskew w-full"><div class="hidden lg:block text-[11px] font-normal bg-white text-black px-1.5 inline-block p5-font-impact mb-1">PLAYER 3</div><div class="text-[10px] sm:text-xs lg:text-lg font-normal text-white name-field">-</div></div>
             </div>
             <!-- P4 -->
-            <div class="flex flex-col sm:flex-col lg:flex-row items-center gap-2 lg:gap-4 bg-black border-2 border-p5-gray/30 p-2 lg:transform lg:hover:-translate-x-1 p5-btn-transition" id="blue-p4">
-                <div class="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-p5-red text-white border-2 border-white flex items-center justify-center font-normal p5-font-mono text-xl lg:text-2xl flex-shrink-0 slot-img-box p5-unskew">4</div>
-                <div class="truncate text-center lg:text-left p5-unskew w-full"><div class="text-[10px] sm:text-[11px] font-normal bg-white text-black px-1.5 inline-block p5-font-impact mb-1">PLAYER 4</div><div class="text-sm sm:text-base lg:text-lg font-normal text-white name-field">-</div></div>
+            <div class="flex flex-col lg:flex-row items-center gap-1 lg:gap-4 bg-black border border-p5-gray/30 p-1 lg:p-2 lg:transform lg:hover:-translate-x-1 p5-btn-transition" id="blue-p4">
+                <div class="w-8 h-8 sm:w-12 sm:h-14 lg:w-24 lg:h-24 bg-p5-red text-white border border-white flex items-center justify-center font-normal p5-font-mono text-xs lg:text-2xl flex-shrink-0 slot-img-box p5-unskew">4</div>
+                <div class="truncate text-center lg:text-left p5-unskew w-full"><div class="hidden lg:block text-[11px] font-normal bg-white text-black px-1.5 inline-block p5-font-impact mb-1">PLAYER 4</div><div class="text-[10px] sm:text-xs lg:text-lg font-normal text-white name-field">-</div></div>
             </div>
             <!-- P5 -->
-            <div class="flex flex-col sm:flex-col lg:flex-row items-center gap-2 lg:gap-4 bg-black border-2 border-p5-gray/30 p-2 lg:transform lg:hover:-translate-x-1 p5-btn-transition" id="blue-p5">
-                <div class="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-p5-red text-white border-2 border-white flex items-center justify-center font-normal p5-font-mono text-xl lg:text-2xl flex-shrink-0 slot-img-box p5-unskew">5</div>
-                <div class="truncate text-center lg:text-left p5-unskew w-full"><div class="text-[10px] sm:text-[11px] font-normal bg-white text-black px-1.5 inline-block p5-font-impact mb-1">PLAYER 5</div><div class="text-sm sm:text-base lg:text-lg font-normal text-white name-field">-</div></div>
+            <div class="flex flex-col lg:flex-row items-center gap-1 lg:gap-4 bg-black border border-p5-gray/30 p-1 lg:p-2 lg:transform lg:hover:-translate-x-1 p5-btn-transition" id="blue-p5">
+                <div class="w-8 h-8 sm:w-12 sm:h-14 lg:w-24 lg:h-24 bg-p5-red text-white border border-white flex items-center justify-center font-normal p5-font-mono text-xs lg:text-2xl flex-shrink-0 slot-img-box p5-unskew">5</div>
+                <div class="truncate text-center lg:text-left p5-unskew w-full"><div class="hidden lg:block text-[11px] font-normal bg-white text-black px-1.5 inline-block p5-font-impact mb-1">PLAYER 5</div><div class="text-[10px] sm:text-xs lg:text-lg font-normal text-white name-field">-</div></div>
             </div>
         </div>
     </section>
 
     <!-- CENTER PANEL: Dynamic Comic-Strip Matrix Selection Base -->
-    <section class="lg:col-span-2 xl:col-span-3 bg-p5-red border-4 border-black p-4 lg:p-5 flex flex-col justify-between shadow-[16px_16px_0px_#0F1012] relative overflow-hidden">
+    <section class="bg-p5-red border-4 border-black p-2.5 lg:p-5 flex flex-col justify-between shadow-[4px_4px_0px_#0F1012] lg:shadow-[16px_16px_0px_#0F1012] relative overflow-hidden lg:col-span-2 xl:col-span-3 order-2 lg:order-none flex-grow">
         
         <!-- Diagonal geometric highlights -->
         <div class="absolute top-0 right-0 w-32 h-32 bg-black transform rotate-45 translate-x-16 -translate-y-16 pointer-events-none"></div>
 
         <!-- Dynamic Filter Ribbon Wrapper -->
-        <div class="flex flex-col gap-3 mb-4 z-10 relative">
-            <input type="text" id="searchBar" class="w-full bg-black border-4 border-white text-white p-3 text-sm font-normal outline-none focus:bg-white focus:text-black lg:transform lg:-rotate-1 p5-btn-transition placeholder-p5-gray shadow-[4px_4px_0px_#0F1012]" placeholder="搜尋英雄庫..." style="letter-spacing: 0.12em;width:95%;">
+        <div class="flex flex-col gap-1.5 mb-2 z-10 relative flex-shrink-0">
+            <input type="text" id="searchBar" class="w-full bg-black border-2 lg:border-4 border-white text-white p-2 text-xs lg:text-sm font-normal outline-none focus:bg-white focus:text-black lg:transform lg:-rotate-1 p5-btn-transition placeholder-p5-gray shadow-[2px_2px_0px_#0F1012] lg:shadow-[4px_4px_0px_#0F1012]" placeholder="搜尋英雄庫..." style="letter-spacing: 0.12em;">
             
-            <!-- High contrast filter tags -->
-            <div class="flex flex-wrap gap-1" id="filterTabs">
-                <button class="px-2.5 py-1 bg-black text-white text-xs font-normal uppercase p5-font-impact border-2 border-white hover:bg-white hover:text-black p5-btn-transition lg:transform lg:-rotate-2" data-filter="all">全部英雄</button>
-                <button class="px-2.5 py-1 bg-white text-black text-xs font-normal uppercase p5-font-impact border-2 border-black hover:bg-black hover:text-white p5-btn-transition lg:transform lg:rotate-3" data-filter="Warrior">戰士</button>
-                <button class="px-2.5 py-1 bg-white text-black text-xs font-normal uppercase p5-font-impact border-2 border-black hover:bg-black hover:text-white p5-btn-transition lg:transform lg:-rotate-3" data-filter="Assassin">刺客</button>
-                <button class="px-2.5 py-1 bg-white text-black text-xs font-normal uppercase p5-font-impact border-2 border-black hover:bg-black hover:text-white p5-btn-transition lg:transform lg:rotate-1" data-filter="Mage">法師</button>
-                <button class="px-2.5 py-1 bg-white text-black text-xs font-normal uppercase p5-font-impact border-2 border-black hover:bg-black hover:text-white p5-btn-transition lg:transform lg:-rotate-1" data-filter="Marksman">射手</button>
-                <button class="px-2.5 py-1 bg-white text-black text-xs font-normal uppercase p5-font-impact border-2 border-black hover:bg-black hover:text-white p5-btn-transition lg:transform lg:rotate-2" data-filter="Tank">坦克</button>
-                <button class="px-2.5 py-1 bg-white text-black text-xs font-normal uppercase p5-font-impact border-2 border-black hover:bg-black hover:text-white p5-btn-transition lg:transform lg:-rotate-2" data-filter="Support">輔助</button>
+            <!-- Single-Row Horizontal Scroll Tabs -->
+            <div class="flex gap-1 overflow-x-auto no-scrollbar whitespace-nowrap pb-0.5" id="filterTabs">
+                <button class="px-2.5 py-0.5 lg:py-1 bg-black text-white text-[10px] lg:text-[11px] font-normal uppercase p5-font-impact border-2 border-white hover:bg-white hover:text-black p5-btn-transition lg:transform lg:-rotate-2 inline-block" data-filter="all">全部英雄</button>
+                <button class="px-2.5 py-0.5 lg:py-1 bg-white text-black text-[10px] lg:text-[11px] font-normal uppercase p5-font-impact border-2 border-black hover:bg-black hover:text-white p5-btn-transition lg:transform lg:rotate-3 inline-block" data-filter="Warrior">戰士</button>
+                <button class="px-2.5 py-0.5 lg:py-1 bg-white text-black text-[10px] lg:text-[11px] font-normal uppercase p5-font-impact border-2 border-black hover:bg-black hover:text-white p5-btn-transition lg:transform lg:-rotate-3 inline-block" data-filter="Assassin">刺客</button>
+                <button class="px-2.5 py-0.5 lg:py-1 bg-white text-black text-[10px] lg:text-[11px] font-normal uppercase p5-font-impact border-2 border-black hover:bg-black hover:text-white p5-btn-transition lg:transform lg:rotate-1 inline-block" data-filter="Mage">法師</button>
+                <button class="px-2.5 py-0.5 lg:py-1 bg-white text-black text-[10px] lg:text-[11px] font-normal uppercase p5-font-impact border-2 border-black hover:bg-black hover:text-white p5-btn-transition lg:transform lg:-rotate-1 inline-block" data-filter="Marksman">射手</button>
+                <button class="px-2.5 py-0.5 lg:py-1 bg-white text-black text-[10px] lg:text-[11px] font-normal uppercase p5-font-impact border-2 border-black hover:bg-black hover:text-white p5-btn-transition lg:transform lg:rotate-2 inline-block" data-filter="Tank">坦克</button>
+                <button class="px-2.5 py-0.5 lg:py-1 bg-white text-black text-[10px] lg:text-[11px] font-normal uppercase p5-font-impact border-2 border-black hover:bg-black hover:text-white p5-btn-transition lg:transform lg:-rotate-2 inline-block" data-filter="Support">輔助</button>
             </div>
         </div>
 
         <!-- Strategy Advisor Calling Card Banner -->
-        <div id="advisorRibbon" class="hidden bg-black text-white border-4 border-white p-3 text-xs font-normal leading-relaxed mb-4 flex items-center gap-4 shadow-[6px_6px_0px_#0F1012] lg:transform lg:rotate-1 z-10"></div>
+        <div id="advisorRibbon" class="hidden bg-black text-white border-2 lg:border-4 border-white p-1.5 lg:p-3 text-[9px] lg:text-xs font-normal leading-relaxed mb-2 items-center gap-2 lg:gap-4 shadow-[2px_2px_0px_#0F1012] lg:transform lg:rotate-1 z-10 flex-shrink-0"></div>
 
-        <!-- Grid Matrix Field -->
-        <div id="heroGrid" class="hero-grid-scroll grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-3 overflow-y-auto pr-1 flex-grow mb-4 h-[280px] sm:h-[320px] xl:h-[380px] z-10 relative"></div>
+        <!-- Grid Matrix Field (在手機上改為 flex-grow 自動填滿剩餘高度) -->
+        <div id="heroGrid" class="hero-grid-scroll grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-5 xl:grid-cols-6 gap-1.5 overflow-y-auto pr-1 flex-grow mb-2 min-h-[120px] lg:h-[320px] xl:h-[380px] z-10 relative"></div>
         
-        <!-- P5 Stylized Action Toolbar -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 border-t-4 border-black pt-4 z-10 relative">
-            <button id="undoBtn" disabled class="bg-black hover:bg-white hover:text-black border-4 border-white text-xs font-normal uppercase py-3 lg:transform lg:-rotate-2 p5-btn-transition disabled:opacity-30 disabled:pointer-events-none p5-font-marker shadow-[4px_4px_0px_#0F1012]" style="letter-spacing: 0.15em;font-size: 1.25rem;">撤銷</button>
-            <button id="confirmBtn" disabled class="bg-white text-black border-4 border-black text-sm font-normal uppercase py-3 lg:transform lg:rotate-1 p5-btn-transition hover:bg-black hover:text-white hover:border-white disabled:opacity-30 disabled:pointer-events-none p5-font-impact shadow-[4px_4px_0px_#0F1012]" style="letter-spacing: 0.12em;font-size: 1.25rem;">鎖定</button>
-            <button id="resetBtn" class="bg-black hover:bg-white hover:text-p5-black border-4 border-white text-xs font-normal uppercase py-3 lg:transform lg:-rotate-1 p5-btn-transition p5-font-marker shadow-[4px_4px_0px_#0F1012]" style="letter-spacing: 0.15em;font-size: 1.25rem;">重置</button>
+        <!-- Single-Row Action Toolbar -->
+        <div class="grid grid-cols-3 gap-1.5 border-t-2 lg:border-t-4 border-black pt-2 z-10 relative flex-shrink-0">
+            <button id="undoBtn" disabled class="bg-black hover:bg-white hover:text-black border-2 lg:border-4 border-white text-xs font-normal uppercase py-2 lg:transform lg:-rotate-2 p5-btn-transition disabled:opacity-30 disabled:pointer-events-none p5-font-marker shadow-[2px_2px_0px_#0F1012] lg:shadow-[4px_4px_0px_#0F1012]">撤銷</button>
+            <button id="confirmBtn" disabled class="bg-white text-black border-2 lg:border-4 border-black text-xs font-normal uppercase py-2 lg:transform lg:rotate-1 p5-btn-transition hover:bg-black hover:text-white hover:border-white disabled:opacity-30 disabled:pointer-events-none p5-font-impact shadow-[2px_2px_0px_#0F1012] lg:shadow-[4px_4px_0px_#0F1012]">鎖定</button>
+            <button id="resetBtn" class="bg-black hover:bg-white hover:text-p5-black border-2 lg:border-4 border-white text-xs font-normal uppercase py-2 lg:transform lg:-rotate-1 p5-btn-transition p5-font-marker shadow-[2px_2px_0px_#0F1012] lg:shadow-[4px_4px_0px_#0F1012]">重置</button>
         </div>
     </section>
 
-    <!-- RIGHT PANEL: Red Team Asymmetrical List -->
-    <section class="lg:col-span-1 bg-p5-panel border-4 border-white p5-skew-pos p-4 flex flex-col gap-4 shadow-[8px_8px_0px_rgba(255,255,255,0.15)]">
-        <div class="p5-unskew-neg bg-white text-black py-1 px-4 lg:transform lg:rotate-3 text-center border-2 border-black">
-            <h2 class="text-xl font-normal p5-font-impact" style="letter-spacing: 0.12em;">紅方怪盜團</h2>
+    <!-- BOTTOM / RIGHT PANEL: Red Team Asymmetrical List -->
+    <section class="bg-p5-panel border-2 lg:border-4 border-white p5-skew-pos p-1.5 lg:p-4 flex flex-col gap-1 lg:gap-4 shadow-[3px_3px_0px_rgba(255,255,255,0.15)] lg:shadow-[8px_8px_0px_rgba(255,255,255,0.15)] lg:col-span-1 order-3 lg:order-none flex-shrink-0">
+        <div class="p5-unskew-neg bg-white text-black py-0.5 lg:py-1 px-4 lg:transform lg:rotate-3 text-center border-2 border-black">
+            <h2 class="text-xs lg:text-xl font-normal p5-font-impact" style="letter-spacing: 0.12em;">紅方怪盜團</h2>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-5 lg:flex lg:flex-col gap-3 h-full justify-between mt-2" id="red-slots-container">
+        <div class="grid grid-cols-5 lg:flex lg:flex-col gap-1 lg:gap-3 h-full justify-between mt-1" id="red-slots-container">
             <!-- P1 -->
-            <div class="flex flex-col sm:flex-col lg:flex-row items-center gap-2 lg:gap-4 bg-black border-2 border-p5-gray/30 p-2 lg:transform lg:hover:translate-x-1 p5-btn-transition" id="red-p1">
-                <div class="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-white text-black border-2 border-black flex items-center justify-center font-normal p5-font-mono text-xl lg:text-2xl flex-shrink-0 slot-img-box p5-unskew-neg">1</div>
-                <div class="truncate text-center lg:text-left p5-unskew-neg w-full"><div class="text-[10px] sm:text-[11px] font-normal bg-white text-black px-1.5 inline-block p5-font-impact mb-1">PLAYER 1</div><div class="text-sm sm:text-base lg:text-lg font-normal text-white name-field">-</div></div>
+            <div class="flex flex-col lg:flex-row items-center gap-1 lg:gap-4 bg-black border border-p5-gray/30 p-1 lg:p-2 lg:transform lg:hover:translate-x-1 p5-btn-transition" id="red-p1">
+                <div class="w-8 h-8 sm:w-12 sm:h-14 lg:w-24 lg:h-24 bg-white text-black border border-black flex items-center justify-center font-normal p5-font-mono text-xs lg:text-2xl flex-shrink-0 slot-img-box p5-unskew-neg">1</div>
+                <div class="truncate text-center lg:text-left p5-unskew-neg w-full"><div class="hidden lg:block text-[11px] font-normal bg-white text-black px-1.5 inline-block p5-font-impact mb-1">PLAYER 1</div><div class="text-[10px] sm:text-xs lg:text-lg font-normal text-white name-field">-</div></div>
             </div>
             <!-- P2 -->
-            <div class="flex flex-col sm:flex-col lg:flex-row items-center gap-2 lg:gap-4 bg-black border-2 border-p5-gray/30 p-2 lg:transform lg:hover:translate-x-1 p5-btn-transition" id="red-p2">
-                <div class="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-white text-black border-2 border-black flex items-center justify-center font-normal p5-font-mono text-xl lg:text-2xl flex-shrink-0 slot-img-box p5-unskew-neg">2</div>
-                <div class="truncate text-center lg:text-left p5-unskew-neg w-full"><div class="text-[10px] sm:text-[11px] font-normal bg-white text-black px-1.5 inline-block p5-font-impact mb-1">PLAYER 2</div><div class="text-sm sm:text-base lg:text-lg font-normal text-white name-field">-</div></div>
+            <div class="flex flex-col lg:flex-row items-center gap-1 lg:gap-4 bg-black border border-p5-gray/30 p-1 lg:p-2 lg:transform lg:hover:translate-x-1 p5-btn-transition" id="red-p2">
+                <div class="w-8 h-8 sm:w-12 sm:h-14 lg:w-24 lg:h-24 bg-white text-black border border-black flex items-center justify-center font-normal p5-font-mono text-xs lg:text-2xl flex-shrink-0 slot-img-box p5-unskew-neg">2</div>
+                <div class="truncate text-center lg:text-left p5-unskew-neg w-full"><div class="hidden lg:block text-[11px] font-normal bg-white text-black px-1.5 inline-block p5-font-impact mb-1">PLAYER 2</div><div class="text-[10px] sm:text-xs lg:text-lg font-normal text-white name-field">-</div></div>
             </div>
             <!-- P3 -->
-            <div class="flex flex-col sm:flex-col lg:flex-row items-center gap-2 lg:gap-4 bg-black border-2 border-p5-gray/30 p-2 lg:transform lg:hover:translate-x-1 p5-btn-transition" id="red-p3">
-                <div class="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-white text-black border-2 border-black flex items-center justify-center font-normal p5-font-mono text-xl lg:text-2xl flex-shrink-0 slot-img-box p5-unskew-neg">3</div>
-                <div class="truncate text-center lg:text-left p5-unskew-neg w-full"><div class="text-[10px] sm:text-[11px] font-normal bg-white text-black px-1.5 inline-block p5-font-impact mb-1">PLAYER 3</div><div class="text-sm sm:text-base lg:text-lg font-normal text-white name-field">-</div></div>
+            <div class="flex flex-col lg:flex-row items-center gap-1 lg:gap-4 bg-black border border-p5-gray/30 p-1 lg:p-2 lg:transform lg:hover:translate-x-1 p5-btn-transition" id="red-p3">
+                <div class="w-8 h-8 sm:w-12 sm:h-14 lg:w-24 lg:h-24 bg-white text-black border border-black flex items-center justify-center font-normal p5-font-mono text-xs lg:text-2xl flex-shrink-0 slot-img-box p5-unskew-neg">3</div>
+                <div class="truncate text-center lg:text-left p5-unskew-neg w-full"><div class="hidden lg:block text-[11px] font-normal bg-white text-black px-1.5 inline-block p5-font-impact mb-1">PLAYER 3</div><div class="text-[10px] sm:text-xs lg:text-lg font-normal text-white name-field">-</div></div>
             </div>
             <!-- P4 -->
-            <div class="flex flex-col sm:flex-col lg:flex-row items-center gap-2 lg:gap-4 bg-black border-2 border-p5-gray/30 p-2 lg:transform lg:hover:translate-x-1 p5-btn-transition" id="red-p4">
-                <div class="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-white text-black border-2 border-black flex items-center justify-center font-normal p5-font-mono text-xl lg:text-2xl flex-shrink-0 slot-img-box p5-unskew-neg">4</div>
-                <div class="truncate text-center lg:text-left p5-unskew-neg w-full"><div class="text-[10px] sm:text-[11px] font-normal bg-white text-black px-1.5 inline-block p5-font-impact mb-1">PLAYER 4</div><div class="text-sm sm:text-base lg:text-lg font-normal text-white name-field">-</div></div>
+            <div class="flex flex-col lg:flex-row items-center gap-1 lg:gap-4 bg-black border border-p5-gray/30 p-1 lg:p-2 lg:transform lg:hover:translate-x-1 p5-btn-transition" id="red-p4">
+                <div class="w-8 h-8 sm:w-12 sm:h-14 lg:w-24 lg:h-24 bg-white text-black border border-black flex items-center justify-center font-normal p5-font-mono text-xs lg:text-2xl flex-shrink-0 slot-img-box p5-unskew-neg">4</div>
+                <div class="truncate text-center lg:text-left p5-unskew-neg w-full"><div class="hidden lg:block text-[11px] font-normal bg-white text-black px-1.5 inline-block p5-font-impact mb-1">PLAYER 4</div><div class="text-[10px] sm:text-xs lg:text-lg font-normal text-white name-field">-</div></div>
             </div>
             <!-- P5 -->
-            <div class="flex flex-col sm:flex-col lg:flex-row items-center gap-2 lg:gap-4 bg-black border-2 border-p5-gray/30 p-2 lg:transform lg:hover:translate-x-1 p5-btn-transition" id="red-p5">
-                <div class="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-white text-black border-2 border-black flex items-center justify-center font-normal p5-font-mono text-xl lg:text-2xl flex-shrink-0 slot-img-box p5-unskew-neg">5</div>
-                <div class="truncate text-center lg:text-left p5-unskew-neg w-full"><div class="text-[10px] sm:text-[11px] font-normal bg-white text-black px-1.5 inline-block p5-font-impact mb-1">PLAYER 5</div><div class="text-sm sm:text-base lg:text-lg font-normal text-white name-field">-</div></div>
+            <div class="flex flex-col lg:flex-row items-center gap-1 lg:gap-4 bg-black border border-p5-gray/30 p-1 lg:p-2 lg:transform lg:hover:translate-x-1 p5-btn-transition" id="red-p5">
+                <div class="w-8 h-8 sm:w-12 sm:h-14 lg:w-24 lg:h-24 bg-white text-black border border-black flex items-center justify-center font-normal p5-font-mono text-xs lg:text-2xl flex-shrink-0 slot-img-box p5-unskew-neg">5</div>
+                <div class="truncate text-center lg:text-left p5-unskew-neg w-full"><div class="hidden lg:block text-[11px] font-normal bg-white text-black px-1.5 inline-block p5-font-impact mb-1">PLAYER 5</div><div class="text-[10px] sm:text-xs lg:text-lg font-normal text-white name-field">-</div></div>
             </div>
         </div>
     </section>
 </main>
 
 <!-- SHORTCUT FOOTER MAP -->
-<footer class="w-full max-w-[1600px] mx-auto mt-6 text-center text-[11px] font-normal text-p5-gray z-10 relative uppercase p5-font-marker" style="letter-spacing: 0.18em;">
-    <span class="hidden md:inline" style="font-size: 1rem;">快捷鍵 | <kbd class="bg-white text-black px-1.5 py-0.5 rounded mx-1">SPACE 或 ENTER</kbd> 確認鎖定 | <kbd class="bg-white text-black px-1.5 py-0.5 rounded mx-1">Z</kbd> 回溯上一階段 | <kbd class="bg-white text-black px-1.5 py-0.5 rounded mx-1">ESC</kbd> 重置篩選條件</span>
-    <span class="inline md:hidden">PHANTOM DRAFT MODULE // MOBILE ACTIVE</span>
+<footer class="w-full max-w-[1600px] mx-auto mt-2 text-center text-[9px] font-normal text-p5-gray z-10 relative uppercase p5-font-marker flex-shrink-0" style="letter-spacing: 0.18em;">
+    <span class="hidden md:inline" style="font-size: 0.8rem;">快捷鍵 | <kbd class="bg-white text-black px-1.5 py-0.5 rounded mx-1">SPACE 或 ENTER</kbd> 確認鎖定 | <kbd class="bg-white text-black px-1.5 py-0.5 rounded mx-1">Z</kbd> 回溯上一階段 | <kbd class="bg-white text-black px-1.5 py-0.5 rounded mx-1">ESC</kbd> 重置篩選條件</span>
+    <span class="inline md:hidden">PHANTOM DRAFT MODULE // MOBILE FULLSCREEN SNAP</span>
 </footer>
 
 <script>
@@ -323,14 +332,14 @@
         clearInterval(timerInterval);
         timeRemaining = 30;
         turnTimer.innerText = timeRemaining;
-        turnTimer.className = "w-14 h-14 sm:w-16 sm:h-16 lg:transform lg:-rotate-12 bg-white text-black border-4 border-black flex items-center justify-center text-2xl sm:text-3xl p5-font-mono font-normal z-10 shadow-[4px_4px_0px_#000] p5-btn-transition";
+        turnTimer.className = "w-9 h-9 sm:w-16 sm:h-16 lg:transform lg:-rotate-12 bg-white text-black border-2 lg:border-4 border-black flex items-center justify-center text-md sm:text-3xl p5-font-mono font-normal z-10 shadow-[2px_2px_0px_#000] lg:shadow-[4px_4px_0px_#000] p5-btn-transition";
         
         timerInterval = setInterval(() => {
             timeRemaining--;
             turnTimer.innerText = timeRemaining;
             
             if (timeRemaining <= 7) {
-                turnTimer.className = "w-14 h-14 sm:w-16 sm:h-16 lg:transform lg:-rotate-12 bg-black text-p5-red border-4 border-p5-red flex items-center justify-center text-2xl sm:text-3xl p5-font-mono font-normal z-10 shadow-[4px_4px_0px_#DC0000] animate-pulse";
+                turnTimer.className = "w-9 h-9 sm:w-16 sm:h-16 lg:transform lg:-rotate-12 bg-black text-p5-red border-2 lg:border-4 border-p5-red flex items-center justify-center text-md sm:text-3xl p5-font-mono font-normal z-10 shadow-[2px_2px_0px_#DC0000] lg:shadow-[4px_4px_0px_#DC0000] animate-pulse";
             }
             
             if (timeRemaining <= 0) {
@@ -387,21 +396,21 @@
                 opacityStyle = 'opacity-20 cursor-not-allowed filter grayscale contrast-50';
             } else if (selectedHero && selectedHero.name === hero.name) {
                 borderStyle = 'border-p5-red';
-                bgStyle = 'bg-black shadow-[-4px_4px_0px_#0F1012]';
+                bgStyle = 'bg-black shadow-[-2px_2px_0px_#0F1012] lg:shadow-[-4px_4px_0px_#0F1012]';
                 textColor = 'text-p5-red';
             }
 
-            card.className = `${bgStyle} border-4 ${borderStyle} p-1.5 text-center cursor-pointer relative p5-btn-transition ${opacityStyle}`;
+            card.className = `${bgStyle} border-2 ${borderStyle} p-1 text-center cursor-pointer relative p5-btn-transition ${opacityStyle}`;
 
             let badgeHtml = '';
             opposingPicks.forEach(enemy => {
                 if (strategicData.counters[enemy]?.includes(hero.name)) {
-                    badgeHtml = `<span class="absolute top-0 left-0 bg-black text-p5-red font-normal border-2 border-white px-1 py-0.5 text-[8px] tracking-wide lg:transform lg:-rotate-6 z-20 p5-font-impact">克制反制</span>`;
+                    badgeHtml = `<span class="absolute top-0 left-0 bg-black text-p5-red font-normal border border-white px-1 py-0.5 text-[7px] tracking-wide lg:transform lg:-rotate-6 z-20 p5-font-impact">克制</span>`;
                 }
             });
             teammatePicks.forEach(ally => {
                 if (strategicData.synergies[ally]?.includes(hero.name)) {
-                    badgeHtml = `<span class="absolute top-0 left-0 bg-white text-black font-normal border-2 border-black px-1 py-0.5 text-[8px] tracking-wide lg:transform lg:rotate-6 z-20 p5-font-impact">戰術連結</span>`;
+                    badgeHtml = `<span class="absolute top-0 left-0 bg-white text-black font-normal border border-black px-1 py-0.5 text-[7px] tracking-wide lg:transform lg:rotate-6 z-20 p5-font-impact">連結</span>`;
                 }
             });
 
@@ -410,7 +419,7 @@
                 <div class="aspect-square w-full overflow-hidden bg-p5-panel border border-p5-gray relative">
                     <img class="w-full h-full object-cover" src="${hero.image}" onerror="this.onerror=null; this.src='https://placehold.co/100?text=${hero.name}';">
                 </div>
-                <div class="text-[10px] font-normal mt-1.5 truncate p5-font-impact uppercase ${textColor}" style="letter-spacing: 0.08em;">${hero.name}</div>
+                <div class="text-[9px] font-normal mt-0.5 truncate p5-font-impact uppercase ${textColor}" style="letter-spacing: 0.05em;">${hero.name}</div>
             `;
 
             if (!isUnavailable) card.onclick = () => selectHero(hero);
@@ -432,7 +441,7 @@
 
     function updateTurnUI(resetScrollPosition = false) {
         document.querySelectorAll('#blue-slots-container > div, #red-slots-container > div').forEach(el => {
-            el.className = "flex flex-col sm:flex-col lg:flex-row items-center gap-2 lg:gap-4 bg-black border-2 border-p5-gray/30 p-2 lg:transform lg:hover:translate-x-1 p5-btn-transition";
+            el.className = "flex flex-col lg:flex-row items-center gap-1 lg:gap-4 bg-black border border-p5-gray/30 p-1 lg:p-2 lg:transform lg:hover:translate-x-1 p5-btn-transition";
         });
         advisorRibbon.className = "hidden";
         undoBtn.disabled = actionHistory.length === 0;
@@ -452,18 +461,18 @@
         if (step.type.startsWith('BAN')) {
             const isBlue = step.type === 'BAN_BLUE';
             statusBanner.innerText = `正在進行 [${step.msg.toUpperCase()}]`;
-            statusBanner.className = `text-lg sm:text-xl font-normal uppercase p5-font-impact ${isBlue ? 'text-black' : 'text-white'}`;
+            statusBanner.className = `text-xs sm:text-xl font-normal uppercase p5-font-impact ${isBlue ? 'text-black' : 'text-white'}`;
         } else {
             const slotEl = document.getElementById(step.player);
             const isBlue = step.type === 'PICK_BLUE';
             
-            slotEl.className = `flex flex-col sm:flex-col lg:flex-row items-center gap-2 lg:gap-4 border p-2 p5-btn-transition ${isBlue ? 'active-glow-blue' : 'active-glow-red'}`;
+            slotEl.className = `flex flex-col lg:flex-row items-center gap-1 lg:gap-4 border p-1 lg:p-2 p5-btn-transition ${isBlue ? 'active-glow-blue' : 'active-glow-red'}`;
             
             statusBanner.innerText = `${isBlue ? '藍方怪盜團' : '紅方怪盜團'} 進行選擇中...`;
-            statusBanner.className = `text-lg sm:text-xl font-normal uppercase p5-font-impact ${isBlue ? 'text-black' : 'text-white'}`;
+            statusBanner.className = `text-xs sm:text-xl font-normal uppercase p5-font-impact ${isBlue ? 'text-black' : 'text-white'}`;
             
-            advisorRibbon.className = "bg-black text-white border-4 border-white p-3 text-xs font-normal leading-relaxed mb-4 flex items-center gap-4 shadow-[6px_6px_0px_#0F1012] lg:transform lg:rotate-1 z-10";
-            advisorRibbon.innerHTML = `<span class="bg-p5-red text-white p-1 text-xs p5-font-marker lg:transform lg:-rotate-12 flex-shrink-0">TIPS</span> <p class="text-white"> ${generateDynamicAdvice(isBlue)}</p>`;
+            advisorRibbon.className = "bg-black text-white border-2 lg:border-4 border-white p-1.5 lg:p-3 text-[9px] lg:text-xs font-normal leading-relaxed mb-2 flex items-center gap-2 lg:gap-4 shadow-[2px_2px_0px_#0F1012] lg:transform lg:rotate-1 z-10 flex-shrink-0";
+            advisorRibbon.innerHTML = `<span class="bg-p5-red text-white p-0.5 lg:p-1 text-[9px] p5-font-marker lg:transform lg:-rotate-12 flex-shrink-0">TIPS</span> <p class="text-white"> ${generateDynamicAdvice(isBlue)}</p>`;
         }
         renderHeroPool(resetScrollPosition);
     }
@@ -509,19 +518,19 @@
             bannedHeroes.add(selectedHero.name);
             const banSlot = document.getElementById(`${step.type === 'BAN_BLUE' ? 'blue' : 'red'}-ban-${step.slot}`);
             banSlot.innerHTML = `<img class="w-full h-full object-cover filter brightness-50 contrast-150 grayscale" src="${selectedHero.image}">
-                                 <div class="absolute inset-0 flex items-center justify-center text-p5-red text-xl sm:text-2xl font-normal p5-font-impact bg-black/40">X</div>`;
-            banSlot.className = "w-10 h-12 sm:w-12 sm:h-14 bg-black border-2 border-p5-red rounded-none relative overflow-hidden shadow-[2px_2px_0px_rgba(220,0,0,1)]";
+                                 <div class="absolute inset-0 flex items-center justify-center text-p5-red text-sm sm:text-2xl font-normal p5-font-impact bg-black/40">X</div>`;
+            banSlot.className = "w-7 h-9 sm:w-12 sm:h-14 bg-black border border-p5-red rounded-none relative overflow-hidden shadow-[1px_1px_0px_rgba(220,0,0,1)] lg:shadow-[2px_2px_0px_rgba(220,0,0,1)]";
         } else {
             pickedHeroes.add(selectedHero.name);
             const slot = document.getElementById(step.player);
             
             const imgBox = slot.querySelector('.slot-img-box');
             imgBox.innerHTML = `<img class="w-full h-full object-cover ${step.type === 'PICK_BLUE' ? 'p5-unskew' : 'p5-unskew-neg'}" src="${selectedHero.image}">`;
-            imgBox.className = `w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 overflow-hidden flex-shrink-0 border-2 ${step.type === 'PICK_BLUE' ? 'border-white' : 'border-black'}`;
+            imgBox.className = `w-8 h-8 sm:w-14 sm:h-14 lg:w-24 lg:h-24 overflow-hidden flex-shrink-0 border ${step.type === 'PICK_BLUE' ? 'border-white' : 'border-black'}`;
             
             slot.querySelector('.name-field').innerText = selectedHero.name;
-            slot.querySelector('.name-field').className = "text-base sm:text-lg lg:text-xl font-normal text-white p5-font-impact uppercase name-field";
-            slot.querySelector('.name-field').style.letterSpacing = "0.08em";
+            slot.querySelector('.name-field').className = "text-[10px] sm:text-sm lg:text-xl font-normal text-white p5-font-impact uppercase name-field";
+            slot.querySelector('.name-field').style.letterSpacing = "0.05em";
         }
 
         currentStepIndex++;
@@ -536,15 +545,15 @@
         if (stepToWipe.type.startsWith('BAN')) {
             const targetBan = document.getElementById(`${stepToWipe.type === 'BAN_BLUE' ? 'blue' : 'red'}-ban-${stepToWipe.slot}`);
             targetBan.innerHTML = '';
-            targetBan.className = "w-10 h-12 sm:w-12 sm:h-14 bg-black border-2 border-black relative overflow-hidden transition-all duration-100";
+            targetBan.className = "w-7 h-9 sm:w-12 sm:h-14 bg-black border border-black relative overflow-hidden transition-all duration-100";
         } else {
             const slot = document.getElementById(stepToWipe.player);
             const imgBox = slot.querySelector('.slot-img-box');
             imgBox.innerHTML = lastState.stepIndex - 9;
-            imgBox.className = `w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 border-2 flex items-center justify-center font-normal p5-font-mono text-xl lg:text-2xl flex-shrink-0 slot-img-box ${stepToWipe.type === 'PICK_BLUE' ? 'bg-p5-red text-white border-white p5-unskew' : 'bg-white text-black border-black p5-unskew-neg'}`;
+            imgBox.className = `w-8 h-8 sm:w-14 sm:h-14 lg:w-24 lg:h-24 border flex items-center justify-center font-normal p5-font-mono text-[10px] lg:text-2xl flex-shrink-0 slot-img-box ${stepToWipe.type === 'PICK_BLUE' ? 'bg-p5-red text-white border-white p5-unskew' : 'bg-white text-black border-black p5-unskew-neg'}`;
             
             slot.querySelector('.name-field').innerText = '-';
-            slot.querySelector('.name-field').className = "text-sm sm:text-base lg:text-lg font-normal text-white name-field";
+            slot.querySelector('.name-field').className = "text-[10px] sm:text-xs lg:text-lg font-normal text-white name-field";
         }
 
         currentStepIndex = lastState.stepIndex;
@@ -560,9 +569,9 @@
     document.querySelectorAll('#filterTabs > button').forEach(button => {
         button.onclick = (e) => {
             document.querySelectorAll('#filterTabs > button').forEach(btn => {
-                btn.className = "px-2.5 py-1 bg-white text-black text-xs font-normal uppercase p5-font-impact border-2 border-black hover:bg-black hover:text-white p5-btn-transition lg:transform lg:rotate-2";
+                btn.className = "px-2.5 py-0.5 lg:py-1 bg-white text-black text-[10px] lg:text-[11px] font-normal uppercase p5-font-impact border-2 border-black hover:bg-black hover:text-white p5-btn-transition lg:transform lg:rotate-2 inline-block";
             });
-            e.target.className = "px-2.5 py-1 bg-black text-white text-xs font-normal uppercase p5-font-impact border-2 border-white p5-btn-transition lg:transform lg:-rotate-2";
+            e.target.className = "px-2.5 py-0.5 lg:py-1 bg-black text-white text-[10px] lg:text-[11px] font-normal uppercase p5-font-impact border-2 border-white p5-btn-transition lg:transform lg:-rotate-2 inline-block";
             currentCategoryFilter = e.target.getAttribute('data-filter');
             renderHeroPool(true); 
         };
