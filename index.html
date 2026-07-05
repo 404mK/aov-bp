@@ -279,7 +279,7 @@
             <input type="text" id="searchBar" class="w-full bg-black border-2 lg:border-4 border-white text-white p-2 text-xs lg:text-sm font-black outline-none focus:bg-white focus:text-black lg:transform lg:-rotate-1 p5-btn-transition placeholder-p5-gray shadow-[2px_2px_0px_#0F1012] lg:shadow-[4px_4px_0px_#0F1012] mb-4" placeholder="搜尋英雄庫..." style="letter-spacing: 0.12em; width:95%;">
             
             <!-- Single-Row Horizontal Scroll Tabs -->
-            <div class="flex gap-3 overflow-x-auto no-scrollbar whitespace-nowrap pb-1.5 mb-4" id="filterTabs">
+            <div class="flex gap-3 overflow-x-auto no-scrollbar whitespace-nowrap pb-1.5 mb-2" id="filterTabs">
                 <button class="px-2.5 py-0.5 lg:py-1 bg-black text-white text-[10px] lg:text-[14px] font-black uppercase p5-font-impact border-2 border-white hover:bg-white hover:text-black p5-btn-transition lg:transform lg:-rotate-2 inline-block" data-filter="all">全部英雄</button>
                 <button class="px-2.5 py-0.5 lg:py-1 bg-white text-black text-[10px] lg:text-[14px] font-black uppercase p5-font-impact border-2 border-black hover:bg-black hover:text-white p5-btn-transition lg:transform lg:rotate-3 inline-block" data-filter="Warrior">戰士</button>
                 <button class="px-2.5 py-0.5 lg:py-1 bg-white text-black text-[10px] lg:text-[14px] font-black uppercase p5-font-impact border-2 border-black hover:bg-black hover:text-white p5-btn-transition lg:transform lg:-rotate-3 inline-block" data-filter="Assassin">刺客</button>
@@ -292,7 +292,7 @@
 
         <!-- Strategy Advisor Calling Card Banner -->
         <!-- 優化 1: 加上 mt-3 增加分類標籤與提示欄之間的間距 -->
-        <div id="advisorRibbon" class="hidden bg-black text-white border-2 lg:border-4 border-white p-1.5 lg:p-3 text-[9px] lg:text-xs font-bold leading-relaxed mb-2 mt-3 items-center gap-2 lg:gap-4 shadow-[2px_2px_0px_#0F1012] lg:transform lg:rotate-1 z-10 flex-shrink-0"></div>
+        <div id="advisorRibbon" class="hidden bg-black text-white border-2 lg:border-4 border-white p-1.5 lg:p-3 text-[9px] lg:text-xs font-bold leading-relaxed mb-2 mt-3 items-center gap-2 lg:gap-4 shadow-[2px_2px_0px_#0F1012] lg:transform lg:rotate-1 z-10 flex-shrink-0" style="width: 98%;"></div>
 
         <!-- Grid Matrix Field -->
         <div id="heroGrid" class="hero-grid-scroll grid grid-cols-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-1.5 overflow-y-auto pr-1 flex-grow min-h-0 mb-2 h-[340px] sm:h-[450px] lg:h-[320px] xl:h-[380px] z-10 relative"></div>
@@ -552,7 +552,7 @@
                 statusBanner.className = `text-xs sm:text-xl font-black uppercase p5-font-impact text-white drop-shadow-[2px_2px_0px_#000]`;
 
                 // 優化 1: 確保套用 mt-3 的類別
-                advisorRibbon.className = "bg-black text-white border-2 lg:border-4 border-white p-1.5 lg:p-3 text-[9px] lg:text-xs font-bold leading-relaxed mb-2 mt-3 flex items-center gap-2 lg:gap-4 shadow-[2px_2px_0px_#0F1012] lg:transform lg:rotate-1 z-10 flex-shrink-0";
+                advisorRibbon.className = "hidden bg-black text-white border-2 lg:border-4 border-white p-1.5 lg:p-3 text-[9px] lg:text-xs font-bold leading-relaxed mb-2 mt-3 flex items-center gap-2 lg:gap-4 shadow-[2px_2px_0px_#0F1012] lg:transform lg:rotate-1 z-10 flex-shrink-0";
                 advisorRibbon.innerHTML = `<span class="bg-p5-red text-white p-0.5 lg:p-1 text-[9px] p5-font-marker lg:transform lg:-rotate-12 flex-shrink-0 shadow-[1px_1px_0px_#FFF]">TIPS</span> <p class="text-white"> ${generateDynamicAdvice(isBlue)}</p>`;
             }
             renderHeroPool(resetScrollPosition);
